@@ -1,0 +1,69 @@
+name: Feature request
+description: Propose a new feature or enhancement for kinship.
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing an idea.
+        Please focus on problem statement, API shape, and trade-offs.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What user/developer problem are you trying to solve?
+      placeholder: A clear and concise description of the current pain point.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What change do you want?
+      placeholder: Describe the API, behavior, and expected output.
+      render: typescript
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you considered and why they are insufficient.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact area
+      options:
+        - Graph core (normalize/index)
+        - Validation diagnostics
+        - Query/subgraph extraction
+        - Export format (DOT/Mermaid/JSON)
+        - Documentation
+        - Tooling/CI
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: breaking
+    attributes:
+      label: Compatibility
+      options:
+        - label: This may introduce a breaking API/output change.
+          required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true
+        - label: I agree to follow this project's Code of Conduct.
+          required: true
