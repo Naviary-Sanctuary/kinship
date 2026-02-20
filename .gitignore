@@ -16,5 +16,4 @@ AGENTS.local.md
 
 # OS/editor noise
 .DS_Store
-.vscode/
 .idea/

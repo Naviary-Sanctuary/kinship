@@ -1,0 +1,36 @@
+{
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "const-comparisons": "error",
+    "no-cond-assign": "error",
+    "no-const-assign": "error",
+    "no-debugger": "error",
+    "no-dupe-class-members": "error",
+    "no-dupe-keys": "error",
+    "no-empty-pattern": "error",
+    "import/no-duplicates": "warn",
+    "no-control-regex": "error",
+    "no-useless-escape": "error",
+    "no-throw-literal": "error",
+    "no-undef-init": "error",
+    "no-console": "warn",
+    "no-unused-vars": [
+      "warn",
+      {
+        "varsIgnorePattern": "^_",
+        "argsIgnorePattern": "^_"
+      }
+    ]
+  },
+  "ignorePatterns": ["dist", "build", "coverage", "node_modules", "bun.lock"],
+  "overrides": [
+    {
+      "files": ["test/**", "examples/**"],
+      "rules": {
+        "no-unused-vars": "off"
+      }
+    }
+  ]
+}
