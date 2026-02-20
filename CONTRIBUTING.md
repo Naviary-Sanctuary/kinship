@@ -3,6 +3,8 @@
 Thanks for contributing.
 This project is currently in a bootstrap phase, so contributions may include both documentation and initial code scaffolding.
 
+If your contribution used AI assistance, you must follow [`AI_POLICY.md`](./AI_POLICY.md).
+
 ## Ways to contribute
 
 - Report bugs
@@ -41,8 +43,17 @@ This project is currently in a bootstrap phase, so contributions may include bot
 - Maintainers may request design changes before merge.
 - Breaking changes should be explicitly called out in the PR.
 - Export format changes should be treated carefully because they may affect downstream consumers.
+- Maintainers may reject PRs that do not meet [`AI_POLICY.md`](./AI_POLICY.md).
 
 ## Code of Conduct
 
 By participating in this project, you agree to follow the Code of Conduct:
 [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md)
+
+## Local guardrail setup
+
+To prevent accidental commits that modify `AGENTS.md`, enable repository hooks:
+
+```sh
+git config core.hooksPath .githooks
+```

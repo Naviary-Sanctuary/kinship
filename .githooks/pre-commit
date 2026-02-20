@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+set -eu
+
+if git diff --cached --name-only --diff-filter=ACMR | grep -Eq '^AGENTS\.md$'; then
+  echo "Commit blocked: AGENTS.md is repository policy baseline."
+  echo "Use AGENTS.local.md for local-only overrides (gitignored)."
+  exit 1
+fi
