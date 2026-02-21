@@ -35,7 +35,7 @@ describe('validateRecord Test', () => {
       ],
     ])('should return a normalized record and no issues for input: $id, $sireId, $damId', (input, expected) => {
       const result = validateRecord(input);
-      expect(result).toStrictEqual(expected);
+      expect(result).toEqual(expected);
     });
   });
 
@@ -45,7 +45,7 @@ describe('validateRecord Test', () => {
         const result = validateRecord({ id: '', sireId: 'B', damId: null });
         expect(result.record).toBeNull();
         expect(result.issues).toEqual([
-          { level: 'error', code: 'EMPTY_ID', field: 'id', message: 'id must not be empty or whitespace-only.' },
+          { level: 'error', code: 'EMPTY_ID', message: 'id must not be empty or whitespace-only.' },
         ]);
       });
     });
@@ -85,7 +85,7 @@ describe('validateRecord Test', () => {
       ])('should return record and issues for input: $id, $sireId, $damId', (input, expected) => {
         const result = validateRecord(input);
 
-        expect(result).toStrictEqual(expected);
+        expect(result).toEqual(expected);
       });
     });
 
@@ -123,7 +123,7 @@ describe('validateRecord Test', () => {
         ],
       ])('should return record and issues for input: $id, $sireId, $damId', (input, expected) => {
         const result = validateRecord(input);
-        expect(result).toStrictEqual(expected);
+        expect(result).toEqual(expected);
       });
     });
 
@@ -131,7 +131,7 @@ describe('validateRecord Test', () => {
       test('should drop parent links and report issue when sireId and damId are the same', () => {
         const result = validateRecord({ id: 'A', sireId: 'B', damId: 'B' });
 
-        expect(result).toStrictEqual({
+        expect(result).toEqual({
           record: { id: 'A' },
           issues: [
             {

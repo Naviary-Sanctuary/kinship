@@ -1,5 +1,5 @@
 import type { Nullable } from '../internal/types';
-import { isString } from '../internal/util';
+import { generateIssue } from '../models/issue-factory';
 import type { Field, PedigreeIssue } from '../models/issues';
 import type { PedigreeId, PedigreeRecord, PedigreeRecordInput } from '../models/pedigree';
 
@@ -67,12 +67,7 @@ export function validateRecord(input: PedigreeRecordInput): ValidateRecordResult
     normalizedSireId === normalizedDamId;
 
   if (hasSameParent) {
-    issues.push({
-      level: 'error',
-      code: 'SAME_PARENT',
-      id: issueId,
-      message: 'Sire and Dam must not be same.',
-    });
+    issues.push(generateIssue('SAME_PARENT', { id: issueId }));
   }
 
   if (!hasValidId) return { record: null, issues };
@@ -81,8 +76,8 @@ export function validateRecord(input: PedigreeRecordInput): ValidateRecordResult
   // Invalid or unknown values are omitted from the record
   const record: PedigreeRecord = {
     id: input.id,
-    ...(hasValidSireId && isString(input.sireId) ? { sireId: input.sireId } : {}),
-    ...(hasValidDamId && isString(input.damId) ? { damId: input.damId } : {}),
+    ...(!hasSameParent && hasValidSireId && normalizedSireId !== undefined ? { sireId: normalizedSireId } : {}),
+    ...(!hasSameParent && hasValidDamId && normalizedDamId !== undefined ? { damId: normalizedDamId } : {}),
   };
 
   return {
@@ -113,12 +108,7 @@ function validateId(id: PedigreeId): { hasValidId: boolean; issues: PedigreeIssu
   const issues: PedigreeIssue[] = [];
 
   if (id.length === 0) {
-    issues.push({
-      level: 'error',
-      code: 'EMPTY_ID',
-      field: 'id',
-      message: `id must not be empty or whitespace-only.`,
-    });
+    issues.push(generateIssue('EMPTY_ID'));
   }
 
   return { hasValidId: issues.length === 0, issues };
@@ -148,23 +138,11 @@ function validateParentId({
   }
 
   if (normalized.isBlank) {
-    issues.push({
-      level: 'error',
-      code: 'EMPTY_PARENT_ID',
-      field,
-      id,
-      message: `${field} must not be empty or whitespace-only.`,
-    });
+    issues.push(generateIssue('EMPTY_PARENT_ID', { field, id }));
   }
 
   if (id !== undefined && normalized.normalizedParentId !== undefined && normalized.normalizedParentId === id) {
-    issues.push({
-      level: 'error',
-      code: 'SELF_PARENT',
-      id,
-      field,
-      message: `${field} must not be the same as individual id.`,
-    });
+    issues.push(generateIssue('SELF_PARENT', { field, id }));
   }
 
   return { hasValidParentId: issues.length === 0, normalizeParentId: normalized.normalizedParentId, issues };
