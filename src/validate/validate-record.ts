@@ -8,11 +8,17 @@ import type { PedigreeId, PedigreeRecord, PedigreeRecordInput } from '../models/
  *
  * when id is invalid, record is discarded (null)
  * normalized parent fields use `string | undefined` only (no stored nulls)
- * `issues` order is deterministic: `id -> sireId -> damId`
+ * `issues` order is deterministic: `id -> sireId -> damId -> cross-field`
  */
 export interface ValidateRecordResult {
   record: Nullable<PedigreeRecord>;
   issues: readonly PedigreeIssue[];
+}
+
+interface OptionalIdNormalization {
+  normalizedParentId?: PedigreeId;
+  isMissing: boolean;
+  isBlank: boolean;
 }
 
 /**
@@ -24,22 +30,50 @@ export interface ValidateRecordResult {
 export function validateRecord(input: PedigreeRecordInput): ValidateRecordResult {
   const issues: PedigreeIssue[] = [];
 
-  const { hasValidId, issues: idIssues } = validateId(input.id);
+  const trimmedId = input.id.trim();
+
+  const { hasValidId, issues: idIssues } = validateId(trimmedId);
   issues.push(...idIssues);
 
-  const { hasValidParentId: hasValidSireId, issues: sireIssues } = validateParentId({
-    id: hasValidId ? input.id : undefined,
+  const issueId = hasValidId ? trimmedId : undefined;
+
+  const {
+    hasValidParentId: hasValidSireId,
+    normalizeParentId: normalizedSireId,
+    issues: sireIssues,
+  } = validateParentId({
+    id: issueId,
     parentId: input.sireId,
     field: 'sireId',
   });
   issues.push(...sireIssues);
 
-  const { hasValidParentId: hasValidDamId, issues: damIssues } = validateParentId({
-    id: hasValidId ? input.id : undefined,
+  const {
+    hasValidParentId: hasValidDamId,
+    normalizeParentId: normalizedDamId,
+    issues: damIssues,
+  } = validateParentId({
+    id: issueId,
     parentId: input.damId,
     field: 'damId',
   });
   issues.push(...damIssues);
+
+  const hasSameParent =
+    hasValidSireId &&
+    hasValidDamId &&
+    normalizedSireId !== undefined &&
+    normalizedDamId !== undefined &&
+    normalizedSireId === normalizedDamId;
+
+  if (hasSameParent) {
+    issues.push({
+      level: 'error',
+      code: 'SAME_PARENT',
+      id: issueId,
+      message: 'Sire and Dam must not be same.',
+    });
+  }
 
   if (!hasValidId) return { record: null, issues };
 
@@ -57,15 +91,28 @@ export function validateRecord(input: PedigreeRecordInput): ValidateRecordResult
   };
 }
 
+function normalizeParentId(id?: Nullable<PedigreeId>): OptionalIdNormalization {
+  if (id === null || id === undefined) {
+    return { normalizedParentId: undefined, isMissing: true, isBlank: false };
+  }
+
+  const trimmedId = id.trim();
+  if (trimmedId.length === 0) {
+    return { normalizedParentId: undefined, isMissing: false, isBlank: true };
+  }
+
+  return { normalizedParentId: trimmedId, isMissing: false, isBlank: false };
+}
+
 /**
  * Validate id
  *
- * validate empty or whitespace-only id
+ * id must be non-empty after normalization
  */
 function validateId(id: PedigreeId): { hasValidId: boolean; issues: PedigreeIssue[] } {
   const issues: PedigreeIssue[] = [];
 
-  if (id.trim().length === 0) {
+  if (id.length === 0) {
     issues.push({
       level: 'error',
       code: 'EMPTY_ID',
@@ -91,13 +138,16 @@ function validateParentId({
   id?: PedigreeId;
   parentId?: Nullable<PedigreeId>;
   field: Exclude<Field, 'id'>;
-}): { hasValidParentId: boolean; issues: PedigreeIssue[] } {
+}): { hasValidParentId: boolean; normalizeParentId?: PedigreeId; issues: PedigreeIssue[] } {
   const issues: PedigreeIssue[] = [];
+  const normalized = normalizeParentId(parentId);
 
   // null means "parent unknown"
-  if (parentId === null) return { hasValidParentId: true, issues };
+  if (normalized.isMissing) {
+    return { hasValidParentId: true, normalizeParentId: undefined, issues };
+  }
 
-  if (parentId?.trim().length === 0) {
+  if (normalized.isBlank) {
     issues.push({
       level: 'error',
       code: 'EMPTY_PARENT_ID',
@@ -107,7 +157,7 @@ function validateParentId({
     });
   }
 
-  if (id !== undefined && parentId === id) {
+  if (id !== undefined && normalized.normalizedParentId !== undefined && normalized.normalizedParentId === id) {
     issues.push({
       level: 'error',
       code: 'SELF_PARENT',
@@ -117,5 +167,5 @@ function validateParentId({
     });
   }
 
-  return { hasValidParentId: issues.length === 0, issues };
+  return { hasValidParentId: issues.length === 0, normalizeParentId: normalized.normalizedParentId, issues };
 }

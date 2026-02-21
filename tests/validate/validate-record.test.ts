@@ -126,5 +126,23 @@ describe('validateRecord Test', () => {
         expect(result).toStrictEqual(expected);
       });
     });
+
+    describe('SAME_PARENT', () => {
+      test('should drop parent links and report issue when sireId and damId are the same', () => {
+        const result = validateRecord({ id: 'A', sireId: 'B', damId: 'B' });
+
+        expect(result).toStrictEqual({
+          record: { id: 'A' },
+          issues: [
+            {
+              level: 'error',
+              code: 'SAME_PARENT',
+              id: 'A',
+              message: 'Sire and Dam must not be same.',
+            },
+          ],
+        });
+      });
+    });
   });
 });

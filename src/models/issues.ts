@@ -16,6 +16,7 @@ export type IssueCode =
   | 'EMPTY_ID'
   | 'EMPTY_PARENT_ID'
   | 'SELF_PARENT'
+  | 'SAME_PARENT'
   | 'MISSING_PARENT'
   | 'DUPLICATE_ID'
   | 'CYCLE_DETECTED';
