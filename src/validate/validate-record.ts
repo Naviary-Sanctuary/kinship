@@ -75,7 +75,7 @@ export function validateRecord(input: PedigreeRecordInput): ValidateRecordResult
   // Inly valid parent ids are included in the normalized output.
   // Invalid or unknown values are omitted from the record
   const record: PedigreeRecord = {
-    id: input.id,
+    id: trimmedId,
     ...(!hasSameParent && hasValidSireId && normalizedSireId !== undefined ? { sireId: normalizedSireId } : {}),
     ...(!hasSameParent && hasValidDamId && normalizedDamId !== undefined ? { damId: normalizedDamId } : {}),
   };
