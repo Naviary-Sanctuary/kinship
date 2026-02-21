@@ -1,6 +1,6 @@
 import type { Nullable } from '../internal/types';
 import { generateIssue } from '../models/issue-factory';
-import type { Field, PedigreeIssue } from '../models/issues';
+import type { Field, KinshipIssue } from '../models/issues';
 import type { PedigreeId, PedigreeRecord, PedigreeRecordInput } from '../models/pedigree';
 
 /**
@@ -12,7 +12,7 @@ import type { PedigreeId, PedigreeRecord, PedigreeRecordInput } from '../models/
  */
 export interface ValidateRecordResult {
   record: Nullable<PedigreeRecord>;
-  issues: readonly PedigreeIssue[];
+  issues: readonly KinshipIssue[];
 }
 
 interface OptionalIdNormalization {
@@ -28,7 +28,7 @@ interface OptionalIdNormalization {
  * @returns Normalized internal record used after validation and any non-blocking issues.
  */
 export function validateRecord(input: PedigreeRecordInput): ValidateRecordResult {
-  const issues: PedigreeIssue[] = [];
+  const issues: KinshipIssue[] = [];
 
   const trimmedId = input.id.trim();
 
@@ -104,8 +104,8 @@ function normalizeParentId(id?: Nullable<PedigreeId>): OptionalIdNormalization {
  *
  * id must be non-empty after normalization
  */
-function validateId(id: PedigreeId): { hasValidId: boolean; issues: PedigreeIssue[] } {
-  const issues: PedigreeIssue[] = [];
+function validateId(id: PedigreeId): { hasValidId: boolean; issues: KinshipIssue[] } {
+  const issues: KinshipIssue[] = [];
 
   if (id.length === 0) {
     issues.push(generateIssue('EMPTY_ID'));
@@ -128,8 +128,8 @@ function validateParentId({
   id?: PedigreeId;
   parentId?: Nullable<PedigreeId>;
   field: Exclude<Field, 'id'>;
-}): { hasValidParentId: boolean; normalizeParentId?: PedigreeId; issues: PedigreeIssue[] } {
-  const issues: PedigreeIssue[] = [];
+}): { hasValidParentId: boolean; normalizeParentId?: PedigreeId; issues: KinshipIssue[] } {
+  const issues: KinshipIssue[] = [];
   const normalized = normalizeParentId(parentId);
 
   // null means "parent unknown"

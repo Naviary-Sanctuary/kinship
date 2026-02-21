@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'bun:test';
 import { generateIssue } from '../../src/models/issue-factory';
-import type { IssueCode, PedigreeIssue } from '../../src/models/issues';
+import type { IssueCode, KinshipIssue } from '../../src/models/issues';
 
-type TestEntry = [label: string, act: () => PedigreeIssue, expected: Partial<PedigreeIssue>];
+type TestEntry = [label: string, act: () => KinshipIssue, expected: Partial<KinshipIssue>];
 
 const cases: Record<IssueCode, TestEntry[]> = {
   EMPTY_ID: [
@@ -78,7 +78,7 @@ const allCases: TestEntry[] = Object.values(cases).flat();
 describe('issueFactory Test', () => {
   describe('generateIssue Test', () => {
     test.each(allCases)('%s', (_label, act, expected) => {
-      expect(act()).toEqual(expected as PedigreeIssue);
+      expect(act()).toEqual(expected as KinshipIssue);
     });
   });
 });

@@ -1,4 +1,4 @@
-import type { Field, IssueCode, IssueLevel, PedigreeIssue } from './issues';
+import type { Field, IssueCode, IssueLevel, KinshipIssue } from './issues';
 import type { PedigreeId } from './pedigree';
 
 type ParentField = Extract<Field, 'sireId' | 'damId'>;
@@ -41,7 +41,7 @@ type PayloadArg<C extends IssueCode> = keyof IssuePayload[C] extends never ? [] 
  *
  * arguments are following the payload type of the issue code
  */
-export function generateIssue<C extends IssueCode>(code: C, ...args: PayloadArg<C>): PedigreeIssue {
+export function generateIssue<C extends IssueCode>(code: C, ...args: PayloadArg<C>): KinshipIssue {
   const payload = (args[0] ?? {}) as IssuePayload[C];
 
   const formatMessage = formatMessageMap[code] as (payload: IssuePayload[C]) => string;

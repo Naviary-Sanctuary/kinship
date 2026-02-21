@@ -26,7 +26,7 @@ export type Field = 'id' | 'sireId' | 'damId';
 /**
  * Explainable diagnostic item emitted by validation/build pipeline.
  */
-export interface PedigreeIssue {
+export interface KinshipIssue {
   level: IssueLevel;
   code: IssueCode;
   message: string;

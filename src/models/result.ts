@@ -1,4 +1,4 @@
-import type { PedigreeIssue } from './issues';
+import type { KinshipIssue } from './issues';
 import type { PedigreeId, PedigreeRecord } from './pedigree';
 
 /**
@@ -41,10 +41,10 @@ export type BuildPedigreeResult =
   | {
       ok: true;
       graph: PedigreeGraph;
-      issues: readonly PedigreeIssue[];
+      issues: readonly KinshipIssue[];
     }
   | {
       ok: false;
-      fatal: PedigreeIssue;
-      issues: readonly PedigreeIssue[];
+      fatal: KinshipIssue;
+      issues: readonly KinshipIssue[];
     };

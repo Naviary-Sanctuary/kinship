@@ -1,11 +1,11 @@
 import { generateIssue } from '../models/issue-factory';
-import type { PedigreeIssue } from '../models/issues';
+import type { KinshipIssue } from '../models/issues';
 import type { PedigreeId, PedigreeRecord, PedigreeRecordInput } from '../models/pedigree';
 import { validateRecord } from './validate-record';
 
 export interface SanitizeRecordsResult {
-  records: readonly PedigreeRecordInput[];
-  issues: readonly PedigreeIssue[];
+  records: readonly PedigreeRecord[];
+  issues: readonly KinshipIssue[];
 }
 
 /**
@@ -15,7 +15,7 @@ export interface SanitizeRecordsResult {
  * @returns Sanitized records and any non-blocking issues.
  */
 export function sanitizeRecords(inputs: PedigreeRecordInput[]): SanitizeRecordsResult {
-  const issues: PedigreeIssue[] = [];
+  const issues: KinshipIssue[] = [];
 
   const normalizedRecords = inputs
     .map((input) => {
@@ -38,10 +38,10 @@ export function sanitizeRecords(inputs: PedigreeRecordInput[]): SanitizeRecordsR
 /**
  * Deduplicate records by id.
  */
-function deduplicateRecords(records: PedigreeRecord[]): { deduplicated: PedigreeRecord[]; issues: PedigreeIssue[] } {
+function deduplicateRecords(records: PedigreeRecord[]): { deduplicated: PedigreeRecord[]; issues: KinshipIssue[] } {
   const seenIds = new Set<PedigreeId>();
   const deduplicated: PedigreeRecord[] = [];
-  const issues: PedigreeIssue[] = [];
+  const issues: KinshipIssue[] = [];
 
   records.forEach((record) => {
     if (!seenIds.has(record.id)) {
@@ -60,10 +60,10 @@ function deduplicateRecords(records: PedigreeRecord[]): { deduplicated: Pedigree
  */
 function pruneDanglingParentLinks(records: PedigreeRecord[]): {
   cleanedRecords: PedigreeRecord[];
-  issues: PedigreeIssue[];
+  issues: KinshipIssue[];
 } {
   const knownIds = new Set<PedigreeId>(records.map((record) => record.id));
-  const issues: PedigreeIssue[] = [];
+  const issues: KinshipIssue[] = [];
 
   const cleanedRecords = records.map((record) => {
     const result: PedigreeRecord = { id: record.id };
