@@ -7,7 +7,7 @@ import type {
   PartnerRelationship,
 } from '../models/kinship';
 import type { PedigreeId, PedigreeRecord, PedigreeRecordInput } from '../models/pedigree';
-import { sanitizeRecords } from '../validate';
+import { detectCycles, sanitizeRecords } from '../validate';
 import { EMPTY_PEDIGREE_IDS } from '../internal/constants';
 
 interface MutablePartnerRelationShip {
@@ -22,14 +22,14 @@ interface MutablePartnerRelationShip {
  * The graph keeps descent and partner relations in separate indexes
  */
 export function build(inputs: PedigreeRecordInput[], options?: KinshipBuildOptions): BuildKinshipGraphResult {
-  // TODO: reserved for phase 2
-  // const normalizedOptions: Required<KinshipBuildOptions> = {
-  //   detectCycles: options?.detectCycles ?? true,
-  //   maxBiologicalParents:
-  //     options?.maxBiologicalParents && Number.isInteger(options.maxBiologicalParents)
-  //       ? options.maxBiologicalParents
-  //       : 2,
-  // };
+  const normalizedOptions: Required<KinshipBuildOptions> = {
+    detectCycles: options?.detectCycles ?? true,
+    // TODO: reserved for phase 2
+    maxBiologicalParents:
+      options?.maxBiologicalParents && Number.isInteger(options.maxBiologicalParents)
+        ? options.maxBiologicalParents
+        : 2,
+  };
 
   const { records, issues } = sanitizeRecords(inputs);
 
@@ -81,6 +81,12 @@ export function build(inputs: PedigreeRecordInput[], options?: KinshipBuildOptio
 
   const parentsByChildId = finalizeAdjacencyMap(parentSetByChildId);
   const childrenByParentId = finalizeAdjacencyMap(childSetByParentId);
+
+  if (normalizedOptions.detectCycles) {
+    const cycleFatal = detectCycles(parentsByChildId);
+    if (cycleFatal) return { ok: false, fatal: cycleFatal, issues: [...issues, cycleFatal] };
+  }
+
   const partnersByIndividualId = finalizeAdjacencyMap(partnerSetByIndividualId);
 
   const individualsById = [...recordsById.keys()].reduce<Map<PedigreeId, Individual>>((map, id) => {

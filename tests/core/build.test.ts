@@ -59,5 +59,62 @@ describe('build Test', () => {
       expect(result.graph.parentsByChildId.get('A')).toEqual(['B']);
       expect(result.graph.partnerRelationshipsByPairKey.size).toBe(0);
     });
+    test('should abort build with fatal issue when child-to-parent cycle exists', () => {
+      const result = build([
+        { id: 'A', sireId: 'B' },
+        { id: 'B', sireId: 'A' },
+      ]);
+
+      expect(result.ok).toBe(false);
+      if (result.ok) {
+        throw new Error('Expected build failure for cycle input.');
+      }
+
+      expect(result.fatal).toEqual({
+        level: 'fatal',
+        code: 'CYCLE_DETECTED',
+        id: 'A',
+        message: 'Cycle detected starting at A.',
+      });
+      expect(result.issues.map((issue) => issue.code)).toEqual(['CYCLE_DETECTED']);
+      expect('graph' in result).toBe(false);
+    });
+
+    test('should preserve sanitize issues and append cycle fatal issue', () => {
+      const result = build([
+        { id: 'A', sireId: 'B', damId: 'Z' },
+        { id: 'B', sireId: 'A' },
+      ]);
+
+      expect(result.ok).toBe(false);
+      if (result.ok) {
+        throw new Error('Expected build failure for cycle input.');
+      }
+
+      expect(result.fatal).toEqual({
+        level: 'fatal',
+        code: 'CYCLE_DETECTED',
+        id: 'A',
+        message: 'Cycle detected starting at A.',
+      });
+      expect(result.issues.map((issue) => issue.code)).toEqual(['MISSING_PARENT', 'CYCLE_DETECTED']);
+      expect('graph' in result).toBe(false);
+    });
+  });
+
+  describe('options', () => {
+    test('should disable cycle detection when detectCycles is false', () => {
+      const result = build(
+        [
+          { id: 'A', sireId: 'B' },
+          { id: 'B', sireId: 'A' },
+        ],
+        { detectCycles: false },
+      );
+
+      expect(result.ok).toBe(true);
+      expect(result.issues).toEqual([]);
+      expect('graph' in result).toBe(true);
+    });
   });
 });
