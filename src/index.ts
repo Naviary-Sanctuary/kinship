@@ -17,7 +17,7 @@ export type {
   KinshipBuildOptions,
   KinshipGraph,
   KinshipLink,
-  PartnerRelationShip,
+  PartnerRelationship as PartnerRelationShip,
   RelationshipKind,
 } from './models/kinship';
 

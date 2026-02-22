@@ -1,15 +1,14 @@
-import { addToSetMap } from '../internal/util';
+import { addToSetMap, getPairKey } from '../internal/util';
 import type {
   BuildKinshipGraphResult,
   Individual,
   KinshipBuildOptions,
   KinshipGraph,
-  PartnerRelationShip,
+  PartnerRelationship,
 } from '../models/kinship';
 import type { PedigreeId, PedigreeRecord, PedigreeRecordInput } from '../models/pedigree';
 import { sanitizeRecords } from '../validate';
-
-const EMPTY_PEDIGREE_IDS = Object.freeze([]) as readonly PedigreeId[];
+import { EMPTY_PEDIGREE_IDS } from '../internal/constants';
 
 interface MutablePartnerRelationShip {
   pairKey: string;
@@ -42,21 +41,19 @@ export function build(inputs: PedigreeRecordInput[], options?: KinshipBuildOptio
       (acc, record) => {
         acc.recordsById.set(record.id, record);
 
-        if (record.sireId) {
-          addToSetMap(acc.parentSetByChildId, record.id, record.sireId);
-          addToSetMap(acc.childSetByParentId, record.sireId, record.id);
-        }
-        if (record.damId) {
-          addToSetMap(acc.parentSetByChildId, record.id, record.damId);
-          addToSetMap(acc.childSetByParentId, record.damId, record.id);
-        }
+        // Descent logic
+        const parents = [record.sireId, record.damId].filter((id): id is PedigreeId => id !== undefined);
+        parents.forEach((parentId) => {
+          addToSetMap(acc.parentSetByChildId, record.id, parentId);
+          addToSetMap(acc.childSetByParentId, parentId, record.id);
+        });
 
+        // Partner logic
         if (record.sireId && record.damId && record.sireId !== record.damId) {
-          const [individualAId, individualBId] = [record.sireId, record.damId].toSorted((a, b) => a.localeCompare(b));
-          const pairKey = `${individualAId}-${individualBId}`;
+          const pairKey = getPairKey(record.sireId, record.damId);
 
-          addToSetMap(acc.partnerSetByIndividualId, individualAId, individualBId);
-          addToSetMap(acc.partnerSetByIndividualId, individualBId, individualAId);
+          addToSetMap(acc.partnerSetByIndividualId, record.sireId, record.damId);
+          addToSetMap(acc.partnerSetByIndividualId, record.damId, record.sireId);
 
           const existing = acc.mutablePartnerByPairKey.get(pairKey);
           if (existing) {
@@ -64,8 +61,8 @@ export function build(inputs: PedigreeRecordInput[], options?: KinshipBuildOptio
           } else {
             acc.mutablePartnerByPairKey.set(pairKey, {
               pairKey,
-              individualAId,
-              individualBId,
+              individualAId: record.sireId < record.damId ? record.sireId : record.damId,
+              individualBId: record.sireId < record.damId ? record.damId : record.sireId,
               sharedChildIds: new Set([record.id]),
             });
           }
@@ -98,7 +95,7 @@ export function build(inputs: PedigreeRecordInput[], options?: KinshipBuildOptio
     return map;
   }, new Map<PedigreeId, Individual>());
 
-  const partnerRelationshipsByPairKey = [...mutablePartnerByPairKey.entries()].reduce<Map<string, PartnerRelationShip>>(
+  const partnerRelationshipsByPairKey = [...mutablePartnerByPairKey.entries()].reduce<Map<string, PartnerRelationship>>(
     (map, [pairKey, relation]) => {
       map.set(
         pairKey,
@@ -111,7 +108,7 @@ export function build(inputs: PedigreeRecordInput[], options?: KinshipBuildOptio
       );
       return map;
     },
-    new Map<string, PartnerRelationShip>(),
+    new Map<string, PartnerRelationship>(),
   );
 
   const graph: KinshipGraph = {

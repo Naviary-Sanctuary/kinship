@@ -33,7 +33,7 @@ export interface KinshipLink {
 /**
  * Aggregated partner relation inferred from dual-parent records.
  */
-export interface PartnerRelationShip {
+export interface PartnerRelationship {
   /**
    * pairKey is normalized so the same pair has a stable identity regardless of input order.
    */
@@ -60,7 +60,7 @@ export interface KinshipGraph {
   parentsByChildId: ReadonlyMap<PedigreeId, readonly PedigreeId[]>;
   childrenByParentId: ReadonlyMap<PedigreeId, readonly PedigreeId[]>;
   partnersByIndividualId: ReadonlyMap<PedigreeId, readonly PedigreeId[]>;
-  partnerRelationshipsByPairKey: ReadonlyMap<string, PartnerRelationShip>;
+  partnerRelationshipsByPairKey: ReadonlyMap<string, PartnerRelationship>;
   issues: readonly KinshipIssue[];
 }
 
