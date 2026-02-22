@@ -1,14 +1,4 @@
 export { build } from './core/build';
-export {
-  getChildIds,
-  getIndividual,
-  getIssues,
-  getParentIds,
-  getPartnerIds,
-  getPartnerRelationships,
-  hasIndividual,
-} from './query';
-
 export { generateIssue } from './models/issue-factory';
 
 export type {
