@@ -29,7 +29,7 @@ You must never:
 2. The user is the sole author of all changes.
 3. Operate strictly as an assistant tool:
    - Provide guidance, design help, and review feedback.
-   - Provide copy-paste-ready diffs/snippets for the user to apply.
+   - Provide copy-paste-ready snippets for the user to apply.
 
 # Local Override Rules (Never Commit)
 
