@@ -1,5 +1,5 @@
 {
-  "name": "kinship",
+  "name": "@naviary-sanctuary/kinship",
   "version": "0.1.0",
   "description": "A TypeScript toolkit for modeling, validating, and querying pedigree DAGs with explainable diagnostics.",
   "keywords": [
