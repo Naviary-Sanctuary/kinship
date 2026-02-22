@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { build } from '../src/core/build';
+import { build } from '../../src/core/build';
 import {
   getChildIds,
   getIndividual,
@@ -8,7 +8,7 @@ import {
   getPartnerIds,
   getPartnerRelationships,
   hasIndividual,
-} from '../src/query';
+} from '../../src/query';
 
 describe('query Test', () => {
   test('should return expected query values for known ids', () => {
