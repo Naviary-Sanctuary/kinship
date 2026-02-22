@@ -25,7 +25,7 @@ describe('detectCycles Test', () => {
       level: 'fatal',
       code: 'CYCLE_DETECTED',
       id: 'A',
-      message: 'Cycle detected starting at A.',
+      message: 'Cycle detected starting at A. Path: A -> A.',
     });
   });
 
@@ -42,7 +42,7 @@ describe('detectCycles Test', () => {
       level: 'fatal',
       code: 'CYCLE_DETECTED',
       id: 'A',
-      message: 'Cycle detected starting at A.',
+      message: 'Cycle detected starting at A. Path: A -> B -> C -> A.',
     });
   });
 
@@ -60,7 +60,7 @@ describe('detectCycles Test', () => {
       level: 'fatal',
       code: 'CYCLE_DETECTED',
       id: 'X',
-      message: 'Cycle detected starting at X.',
+      message: 'Cycle detected starting at X. Path: X -> Y -> X.',
     });
   });
 });

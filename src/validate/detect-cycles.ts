@@ -21,12 +21,21 @@ type NodeColor = (typeof NODE_COLORS)[number];
  */
 export function detectCycles(parentsByChildId: ReadonlyMap<PedigreeId, readonly PedigreeId[]>): KinshipIssue | null {
   const colorById = new Map<PedigreeId, NodeColor>();
+  const stack: PedigreeId[] = [];
+  const stackIndexById = new Map<PedigreeId, number>();
+
+  const buildCyclePath = (revisitedId: PedigreeId): readonly PedigreeId[] => {
+    const startIndex = stackIndexById.get(revisitedId);
+    return startIndex !== undefined
+      ? Object.freeze([...stack.slice(startIndex), revisitedId])
+      : Object.freeze([revisitedId, revisitedId]);
+  };
 
   const visit = (id: PedigreeId): KinshipIssue | null => {
     const currentColor = colorById.get(id) ?? 'White';
 
     if (currentColor === 'Gray') {
-      return generateIssue('CYCLE_DETECTED', { id });
+      return generateIssue('CYCLE_DETECTED', { id, cyclePath: buildCyclePath(id) });
     }
 
     if (currentColor === 'Black') {
@@ -34,14 +43,22 @@ export function detectCycles(parentsByChildId: ReadonlyMap<PedigreeId, readonly 
     }
 
     colorById.set(id, 'Gray');
+    stackIndexById.set(id, stack.length);
+    stack.push(id);
 
     const parents = parentsByChildId.get(id) ?? EMPTY_PEDIGREE_IDS;
 
     for (const parentId of parents) {
       const cycle = visit(parentId);
-      if (cycle) return cycle;
+      if (cycle) {
+        stack.pop();
+        stackIndexById.delete(id);
+        return cycle;
+      }
     }
 
+    stack.pop();
+    stackIndexById.delete(id);
     colorById.set(id, 'Black');
     return null;
   };

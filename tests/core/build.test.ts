@@ -74,7 +74,7 @@ describe('build Test', () => {
         level: 'fatal',
         code: 'CYCLE_DETECTED',
         id: 'A',
-        message: 'Cycle detected starting at A.',
+        message: 'Cycle detected starting at A. Path: A -> B -> A.',
       });
       expect(result.issues.map((issue) => issue.code)).toEqual(['CYCLE_DETECTED']);
       expect('graph' in result).toBe(false);
@@ -95,7 +95,7 @@ describe('build Test', () => {
         level: 'fatal',
         code: 'CYCLE_DETECTED',
         id: 'A',
-        message: 'Cycle detected starting at A.',
+        message: 'Cycle detected starting at A. Path: A -> B -> A.',
       });
       expect(result.issues.map((issue) => issue.code)).toEqual(['MISSING_PARENT', 'CYCLE_DETECTED']);
       expect('graph' in result).toBe(false);

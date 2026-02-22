@@ -9,8 +9,8 @@ type IssuePayload = {
   SELF_PARENT: { field: ParentField; id?: PedigreeId };
   SAME_PARENT: { id?: PedigreeId };
   MISSING_PARENT: { field: ParentField; id?: PedigreeId };
-  DUPLICATE_ID: { id?: PedigreeId; option?: { deduplicate?: boolean } };
-  CYCLE_DETECTED: { id?: PedigreeId };
+  DUPLICATE_ID: { id: PedigreeId; option?: { deduplicate?: boolean } };
+  CYCLE_DETECTED: { id: PedigreeId; cyclePath: readonly PedigreeId[] };
 };
 
 const issueLevels = {
@@ -31,7 +31,8 @@ const formatMessageMap = {
   SAME_PARENT: () => `Sire and Dam must not be same.`,
   MISSING_PARENT: (payload: IssuePayload['MISSING_PARENT']) => `${payload.field} is missing.`,
   DUPLICATE_ID: (payload: IssuePayload['DUPLICATE_ID']) => `Duplicate id found: ${payload.id}.`,
-  CYCLE_DETECTED: (payload: IssuePayload['CYCLE_DETECTED']) => `Cycle detected starting at ${payload.id}.`,
+  CYCLE_DETECTED: (payload: IssuePayload['CYCLE_DETECTED']) =>
+    `Cycle detected starting at ${payload.id}. Path: ${payload.cyclePath?.join(' -> ')}.`,
 } satisfies { [K in IssueCode]: (payload: IssuePayload[K]) => string };
 
 type PayloadArg<C extends IssueCode> = keyof IssuePayload[C] extends never ? [] : [IssuePayload[C]];
@@ -45,10 +46,10 @@ export function generateIssue<C extends IssueCode>(code: C, ...args: PayloadArg<
   const payload = (args[0] ?? {}) as IssuePayload[C];
 
   const formatMessage = formatMessageMap[code] as (payload: IssuePayload[C]) => string;
-  const level = issueLevels[code](payload);
+  const getLevel = issueLevels[code] as (payload: IssuePayload[C]) => IssueLevel;
 
   return {
-    level,
+    level: getLevel(payload),
     code,
     id: 'id' in payload ? payload.id : undefined,
     field: 'field' in payload ? payload.field : undefined,

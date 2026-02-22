@@ -67,8 +67,8 @@ const cases: Record<IssueCode, TestEntry[]> = {
   CYCLE_DETECTED: [
     [
       'CYCLE_DETECTED',
-      () => generateIssue('CYCLE_DETECTED', { id: 'A' }),
-      { level: 'fatal', code: 'CYCLE_DETECTED', id: 'A', message: 'Cycle detected starting at A.' },
+      () => generateIssue('CYCLE_DETECTED', { id: 'A', cyclePath: ['A', 'B', 'C'] }),
+      { level: 'fatal', code: 'CYCLE_DETECTED', id: 'A', message: 'Cycle detected starting at A. Path: A -> B -> C.' },
     ],
   ],
 };
