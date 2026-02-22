@@ -11,5 +11,5 @@ export function addToSetMap<K, V>(map: Map<K, Set<V>>, key: K, value: V): void {
 }
 
 export function getPairKey(a: PedigreeId, b: PedigreeId): string {
-  return a.localeCompare(b) < 0 ? `${a}-${b}` : `${b}-${a}`;
+  return a < b ? `${a}-${b}` : `${b}-${a}`;
 }

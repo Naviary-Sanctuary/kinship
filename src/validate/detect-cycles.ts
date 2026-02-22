@@ -36,26 +36,23 @@ export function detectCycles(parentsByChildId: ReadonlyMap<PedigreeId, readonly 
     colorById.set(id, 'Gray');
 
     const parents = parentsByChildId.get(id) ?? EMPTY_PEDIGREE_IDS;
-    let detectedCycle: KinshipIssue | null = null;
 
-    parents.forEach((parentId) => {
-      if (detectedCycle) return;
-      detectedCycle = visit(parentId);
-    });
-
-    if (detectedCycle) {
-      return detectedCycle;
+    for (const parentId of parents) {
+      const cycle = visit(parentId);
+      if (cycle) return cycle;
     }
 
     colorById.set(id, 'Black');
     return null;
   };
 
-  let fatalCycleIssue: KinshipIssue | null = null;
-  parentsByChildId.forEach((_, childId) => {
-    if (fatalCycleIssue || (colorById.get(childId) && colorById.get(childId) !== 'White')) return;
-    fatalCycleIssue = visit(childId);
-  });
+  for (const childId of parentsByChildId.keys()) {
+    const currentColor = colorById.get(childId) ?? 'White';
+    if (currentColor !== 'White') continue;
 
-  return fatalCycleIssue;
+    const cycle = visit(childId);
+    if (cycle) return cycle;
+  }
+
+  return null;
 }

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import { validateRecord } from '../../src/validate/validate-record';
-import { PedigreeIssue } from '../../src/models/issues';
+import { KinshipIssue } from '../../src/models/issues';
 
 describe('validateRecord Test', () => {
   describe('valid input', () => {
@@ -64,7 +64,7 @@ describe('validateRecord Test', () => {
                 id: 'A',
                 message: 'sireId must not be empty or whitespace-only.',
               },
-            ] as PedigreeIssue[],
+            ] as KinshipIssue[],
           },
         ],
         [
@@ -79,7 +79,7 @@ describe('validateRecord Test', () => {
                 id: 'A',
                 message: 'damId must not be empty or whitespace-only.',
               },
-            ] as PedigreeIssue[],
+            ] as KinshipIssue[],
           },
         ],
       ])('should return record and issues for input: $id, $sireId, $damId', (input, expected) => {
@@ -103,7 +103,7 @@ describe('validateRecord Test', () => {
                 id: 'A',
                 message: 'sireId must not be the same as individual id.',
               },
-            ] as PedigreeIssue[],
+            ] as KinshipIssue[],
           },
         ],
         [
@@ -118,7 +118,7 @@ describe('validateRecord Test', () => {
                 id: 'A',
                 message: 'damId must not be the same as individual id.',
               },
-            ] as PedigreeIssue[],
+            ] as KinshipIssue[],
           },
         ],
       ])('should return record and issues for input: $id, $sireId, $damId', (input, expected) => {
