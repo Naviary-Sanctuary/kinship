@@ -1,18 +1,17 @@
 export { build } from './core/build';
-export { generateIssue } from './models/issue-factory';
+
+export { getAncestors, getDescendants, extractFamilyNetwork } from './query';
+
+export { toMermaid } from './export';
 
 export type {
-  BuildKinshipGraphResult,
-  Individual,
   KinshipBuildOptions,
   KinshipGraph,
+  Individual,
   KinshipLink,
-  PartnerRelationship as PartnerRelationShip,
+  PartnerRelationship,
   RelationshipKind,
 } from './models/kinship';
-
-export type { Field, IssueCode, IssueLevel, KinshipIssue } from './models/issues';
-export type { PedigreeId, PedigreeRecord, PedigreeRecordInput } from './models/pedigree';
-
-export { sanitizeRecords } from './validate/sanitize-records';
-export { validateRecord } from './validate/validate-record';
+export type { PedigreeId, PedigreeRecordInput } from './models/pedigree';
+export type { KinshipIssue, IssueLevel, IssueCode } from './models/issues';
+export type { ExtractFamilyNetworkResult, TraversalOptions, TraversalVisit } from './query/types';

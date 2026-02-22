@@ -24,10 +24,6 @@ export interface KinshipLink {
   kind: RelationshipKind;
   fromId: PedigreeId;
   toId: PedigreeId;
-  /**
-   * Allows partner links to be explained from concrete offspring evidence.
-   */
-  viaChildId?: PedigreeId;
 }
 
 /**
@@ -48,7 +44,6 @@ export interface PartnerRelationship {
  */
 export interface KinshipBuildOptions {
   detectCycles?: boolean;
-  maxBiologicalParents?: number;
 }
 
 /**

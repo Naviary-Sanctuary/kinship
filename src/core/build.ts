@@ -10,7 +10,7 @@ import type { PedigreeId, PedigreeRecord, PedigreeRecordInput } from '../models/
 import { detectCycles, sanitizeRecords } from '../validate';
 import { EMPTY_PEDIGREE_IDS } from '../internal/constants';
 
-interface MutablePartnerRelationShip {
+interface MutablePartnerRelationship {
   pairKey: string;
   individualAId: PedigreeId;
   individualBId: PedigreeId;
@@ -24,11 +24,6 @@ interface MutablePartnerRelationShip {
 export function build(inputs: PedigreeRecordInput[], options?: KinshipBuildOptions): BuildKinshipGraphResult {
   const normalizedOptions: Required<KinshipBuildOptions> = {
     detectCycles: options?.detectCycles ?? true,
-    // TODO: reserved for phase 2
-    maxBiologicalParents:
-      options?.maxBiologicalParents && Number.isInteger(options.maxBiologicalParents)
-        ? options.maxBiologicalParents
-        : 2,
   };
 
   const { records, issues } = sanitizeRecords(inputs);
@@ -75,7 +70,7 @@ export function build(inputs: PedigreeRecordInput[], options?: KinshipBuildOptio
         parentSetByChildId: new Map<PedigreeId, Set<PedigreeId>>(),
         childSetByParentId: new Map<PedigreeId, Set<PedigreeId>>(),
         partnerSetByIndividualId: new Map<PedigreeId, Set<PedigreeId>>(),
-        mutablePartnerByPairKey: new Map<string, MutablePartnerRelationShip>(),
+        mutablePartnerByPairKey: new Map<string, MutablePartnerRelationship>(),
       },
     );
 
