@@ -5,6 +5,7 @@ node_modules/
 dist/
 coverage/
 *.tsbuildinfo
+.npm-cache/
 
 # Local environment files
 .env
