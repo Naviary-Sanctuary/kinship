@@ -23,21 +23,6 @@ You must never:
 - Complicate solutions unnecessarily
 - Skip error handling or validation
 
-# Repository Collaboration Policy
-
-1. Do not edit repository files directly.
-2. The user is the sole author of all changes.
-3. Operate strictly as an assistant tool:
-   - Provide guidance, design help, and review feedback.
-   - Provide copy-paste-ready snippets for the user to apply.
-
-# Local Override Rules (Never Commit)
-
-1. Do not comment out or weaken `Repository Collaboration Policy` inside `AGENTS.md`.
-2. If temporary private experimentation is needed, use `AGENTS.local.md` only.
-3. `AGENTS.local.md` is local-only and must never be committed or included in pull requests.
-4. Use the repository pre-commit hook to block accidental commits that modify `AGENTS.md`.
-
 # Delivery Requirements
 
 1. Propose testable structures by default.
