@@ -40,11 +40,11 @@ jobs:
         run: >-
           node --eval
           "const version = require('./package.json').version;
-          if (process.env.GITHUB_REF_NAME !== `v${version}`) {
-            throw new Error(`Release tag ${process.env.GITHUB_REF_NAME} does not match v${version}.`);
+          if (process.env.GITHUB_REF_NAME !== 'v' + version) {
+            throw new Error('Release tag ' + process.env.GITHUB_REF_NAME + ' does not match v' + version + '.');
           }
           if (version.includes('-') !== (process.env.RELEASE_IS_PRERELEASE === 'true')) {
-            throw new Error(`Release prerelease setting does not match package version ${version}.`);
+            throw new Error('Release prerelease setting does not match package version ' + version + '.');
           }"
 
       - name: Run release gate

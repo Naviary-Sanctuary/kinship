@@ -27,7 +27,7 @@ jobs:
       - name: Lint workflows
         uses: raven-actions/actionlint@205b530c5d9fa8f44ae9ed59f341a0db994aa6f8 # v2.1.2
         with:
-          version-semver: 1.7.12
+          version: 1.7.12
 
   bun:
     name: Bun ${{ matrix.bun-version }}
