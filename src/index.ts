@@ -1,17 +1,28 @@
-export { build } from './core/build';
-
-export { getAncestors, getDescendants, extractFamilyNetwork } from './query';
-
-export { toMermaid } from './export';
+export { Kinship } from './kinship.js';
 
 export type {
-  KinshipBuildOptions,
+  BuildKinshipResult,
+  ComponentId,
+  FamilyOrigin,
+  GraphEdgeId,
+  GraphNodeId,
+  IndividualId,
+  IndividualResolution,
+  KinshipChildEdge,
+  KinshipComponent,
+  KinshipFamilyNode,
   KinshipGraph,
-  Individual,
-  KinshipLink,
-  PartnerRelationship,
-  RelationshipKind,
-} from './models/kinship';
-export type { PedigreeId, PedigreeRecordInput } from './models/pedigree';
-export type { KinshipIssue, IssueLevel, IssueCode } from './models/issues';
-export type { ExtractFamilyNetworkResult, TraversalOptions, TraversalVisit } from './query/types';
+  KinshipGraphEdge,
+  KinshipGraphNode,
+  KinshipIndividualNode,
+  KinshipInput,
+  KinshipIssue,
+  KinshipIssueCode,
+  KinshipIssueSeverity,
+  KinshipPairInput,
+  KinshipParrotInput,
+  KinshipPartnerEdge,
+  PairId,
+  ParentRole,
+  PartnerRole,
+} from './model.js';

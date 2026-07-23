@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "lib": ["ESNext"],
+    "target": "ES2023",
+    "lib": ["ES2023"],
     "module": "Preserve",
     "resolveJsonModule": true,
 
@@ -10,12 +10,15 @@
     "noEmit": true,
 
     "strict": true,
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
+    "noUncheckedSideEffectImports": true,
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
     "isolatedModules": true,
 
     "types": ["bun"]
   },
-  "include": ["src"],
+  "include": ["src", "tests"],
   "exclude": ["node_modules", "dist"]
 }

@@ -14,6 +14,10 @@ coverage/
 
 # Local AI policy override (must stay local)
 AGENTS.local.md
+.sisyphus/
+
+# Internal product-operations material is not part of this OSS package.
+docs/product-ops/
 
 # OS/editor noise
 .DS_Store

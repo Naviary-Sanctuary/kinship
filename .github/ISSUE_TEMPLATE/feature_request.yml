@@ -43,8 +43,8 @@ body:
       options:
         - Graph core (normalize/index)
         - Validation diagnostics
-        - Query/subgraph extraction
-        - Export format (DOT/Mermaid/JSON)
+        - Public topology contract
+        - Standards adapter
         - Documentation
         - Tooling/CI
     validations:

@@ -59,10 +59,8 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported through a confidential report to the maintainers via:
-
-- [GitHub Security Advisories (private draft)](https://github.com/Naviary-Sanctuary/kinship/security/advisories/new)
-- If the above is unavailable, [GitHub Support](https://support.github.com/contact)
+reported privately to the community leaders responsible for enforcement at
+`window95pill@gmail.com`. Do not include a conduct report in a public issue.
 
 All complaints will be reviewed and investigated promptly and fairly.
 
