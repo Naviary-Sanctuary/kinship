@@ -32,6 +32,14 @@ renderer responsibilities.
 
 ## Install
 
+> [!IMPORTANT]
+> This README documents the unreleased `0.2.0` API on `main`. npm's
+> `latest` tag still resolves to legacy `0.1.1`, which is incompatible with
+> the examples below. Do not use the unversioned install command for this API
+> until `0.2.0` is published.
+
+After `0.2.0` is published:
+
 ```sh
 bun add @naviary-sanctuary/kinship
 ```
@@ -40,8 +48,8 @@ bun add @naviary-sanctuary/kinship
 npm install @naviary-sanctuary/kinship
 ```
 
-Node.js 20 or newer and Bun 1.2 or newer are supported.
-The published package is ESM-only.
+Run the package on Node.js 20 or newer or Bun 1.2 or newer. The published
+package is ESM-only; use `import` rather than `require()`.
 
 ## Usage
 
@@ -57,8 +65,8 @@ const result = new Kinship({
 }).build();
 
 if (!result.ok) {
-  // Map these structured issues to the server's normal domain error response.
-  throw new Error(result.issues.map((issue) => issue.message).join('\n'));
+  // Translate this structured result to the service's validation error contract.
+  return { data: null, issues: result.issues };
 }
 
 return {
@@ -257,8 +265,10 @@ reusing it.
 
 ## Renderer boundary
 
-`kinship` produces semantic topology and biological lineage-depth hints. A future
-graph package should own:
+`kinship` produces semantic topology and biological lineage-depth hints. The
+companion
+[`@naviary-sanctuary/kinship-graph`](https://github.com/Naviary-Sanctuary/kinship-graph)
+consumes this topology and owns:
 
 - x/y placement and partner alignment;
 - node occurrence duplication for a strict focus-centered ancestor chart;
@@ -296,9 +306,20 @@ requests use the GitHub issue forms. Changes are recorded in
 ## Development
 
 ```sh
-bun install
+bun install --frozen-lockfile
 bun run check
 ```
 
 The gate checks formatting, lint, strict types, Bun tests, an ESM build, and
 Node.js consumption. The package has no runtime dependencies.
+
+## Contributing
+
+See the
+[contribution guide](https://github.com/Naviary-Sanctuary/kinship/blob/main/CONTRIBUTING.md)
+and
+[code of conduct](https://github.com/Naviary-Sanctuary/kinship/blob/main/CODE_OF_CONDUCT.md).
+
+## License
+
+[MIT](./LICENSE)
