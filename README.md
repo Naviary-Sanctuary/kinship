@@ -90,6 +90,11 @@ return {
 };
 ```
 
+“Passed directly” means that no adapter DTO is required for these fields. Every
+build still validates the complete cross-record pedigree invariants described
+below, so a server entity that can exist in storage is not automatically a
+valid Kinship input.
+
 When explicit Pair data is not needed, a Parrot array is enough:
 
 ```ts
@@ -129,6 +134,9 @@ Pair roles. It is not a general gender-identity, karyotype, or taxonomy field.
 
 - `fatherId` and `motherId` are the only sources of biological parentage.
 - Optional `Pair` records add partner relationships and preserve Pair history.
+- Pair selection and lifecycle policy belong to the caller. The engine cannot
+  infer soft deletion or historical status from ignored fields, so pass exactly
+  the active-only or history-inclusive records intended for this graph.
 - A Pair never creates a parent-child relationship.
 - `Parrot.pairId` is intentionally ignored. It describes a current backlink,
   can become stale after breakup, and is not the Pair that produced that
@@ -255,6 +263,8 @@ At an API or import boundary:
 - run very large imports in a worker or background job instead of a
   latency-sensitive request handler;
 - do not log complete issue arrays when identifiers are sensitive;
+- serialize or log only the `build()` result or its graph, never the `Kinship`
+  instance, because the instance retains the complete source input;
 - scope or paginate data before sending very large graphs to a browser; and
 - pass plain records or normal domain entities. Proxies and throwing getters
   are outside the supported input boundary.

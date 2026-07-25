@@ -6,6 +6,13 @@ versions.
 
 ## [Unreleased]
 
+### Documentation
+
+- Clarified that direct domain-entity input remains subject to Kinship's
+  cross-record invariants.
+- Documented caller-owned active/history Pair selection and the requirement to
+  serialize build results rather than the input-retaining engine instance.
+
 ## [0.2.0] - 2026-07-24
 
 ### Added
